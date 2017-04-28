@@ -2,135 +2,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-int cantidades[24];
-
-void funcion_hora(int);
-
-int main()
-{
-
-    char texto[1];
-    char fecha[26];
-
-    FILE *ptr_clientes;
-    FILE *ptr_fechas;
-
-    int i;
-    int j;
+long int cantidades[24];
+int numero_opcion;
 
 
-    if ((ptr_clientes =fopen("clientes.txt","r"))==NULL )
-    {
-        printf("El archivo no se pudo abrir!!");
-    }
-
-    else
-    {
-
-
-        crear_solo_fechas(ptr_clientes);
-
-       /*while(!feof(ptr_clientes))
-       {
-            fread(texto,sizeof(char),1,ptr_clientes);
-            if (*texto=='[')
-            {
-                fread(fecha,sizeof(char)*26,1,ptr_clientes);
-                printf("\n%s\n",fecha);
-
-                if ((ptr_fechas =fopen("solo_fechas.txt","a"))==NULL )
-                {
-                    printf("El archivo no se pudo abrir!!");
-                }
-                else
-                {
-
-
-                    fwrite(fecha,sizeof(char)*27,1,ptr_fechas);*/
-
-                    /*char *otra_fecha= fecha;
-                    char vacio1[]="";
-                    char hora[2];
-                    char *creoqeno,*creoqeno2;
-                    strcpy(hora,vacio1);
-                    //creoqeno=otra_fecha[12];
-                    //printf("%c\n",*creoqeno);
-                    creoqeno=otra_fecha[12];
-                    creoqeno2=otra_fecha[13];
-                    strcat(hora,&creoqeno);
-                    strcat(hora,&creoqeno2);
-                    //strcat(hora,&otra_fecha[13]);
-                    //printf("%c\n",otra_fecha[12]);
-                    //printf("%s",&hora);
-                    //funcion_hora(fecha,nuevo);
-
-                    /*int i;
-                    char dias[11];
-                    char hora[11];
-                    char *token=strtok(fecha,":");
-
-                    while (token!=NULL)
-                    {
-                        *hora=token;
-                        printf("%s\n",hora);
-                        token=strtok(NULL,":");
-                    }*/
-
-                    //funcion_hora(atoi(hora));
-                    //fclose(ptr_fechas);
-
-                //}
-            //}
-
-       //}
-
-      for(j=0;j<24;j++)
-        {
-            printf("Hora %d Cantidad %d\n",j,cantidades[j]);
-        }
-
-
-        fclose(ptr_clientes);
-        //remove("solo_fechas.txt"); //borrar el archivo solo_fechas!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        /*printf("%d\n",strlen(cantidades));
-        printf("%d\n",cantidades[5]);
-        printf("%d\n",cantidades[6]);
-        printf("%d\n",cantidades[23]);*/
-
-
-
-    }
-    return 0;
-
-}
-
-void funcion_hora(int hora)
-{
-    cantidades[hora]++;
-}
-
-void crear_solo_fechas(FILE *posicion)
+void depurar_solo_fechas(FILE *posicion)
 {
     char caracter[1];
     char fecha[26];
-    FILE *ptr_fechas;
-
+    //FILE *ptr_fechas;
 
     while(!feof(posicion))
     {
+
         fread(caracter,sizeof(char),1,posicion);
         if(*caracter=='[')
         {
             fread(fecha,sizeof(char)*26,1,posicion);
 
-            ptr_fechas= fopen("solo_fechas.txt","a");
+            /*ptr_fechas= fopen("solo_fechas.txt","a");
 
-            fwrite(fecha,sizeof(char)*26,1,ptr_fechas);
+            fwrite(fecha,sizeof(char)*26,1,ptr_fechas);*/
 
-            separar_hora(fecha);
+            //separar_hora(fecha);
+            separar_dma(fecha);
         }
     }
-    fclose(ptr_fechas);
+    //fclose(ptr_fechas);
 }
 
 void separar_hora(char registro[26])
@@ -151,3 +49,137 @@ void separar_hora(char registro[26])
     funcion_hora(rial_hora);
 
 }
+
+void funcion_hora(int hora)
+{
+    cantidades[hora]++;
+}
+
+int num_mes(char mes[3]){
+    char *Aux[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sep","Oct","Nov","Dic"};
+    int i;
+    for (i=0;i<12;i++){
+        //printf("%s-%s",Aux[i],mes);
+        if ( strcmp(Aux[i],mes)==0){
+            return i+1;
+        }
+    }
+
+
+
+}
+void separar_dma(char registro[26]){
+    char *otro_registro= registro;
+    char vacio[]="";
+    char dia[2],mes[3],anho[4];
+    char *primero,*segundo,*tercero,*cuarto;
+    int rial_dia,rial_mes,rial_anho;
+    //--------DIA
+    strcpy(dia,vacio);
+    primero=otro_registro[0];
+    segundo=otro_registro[1];
+    strcat(dia,&primero);
+    strcat(dia,&segundo);
+    //printf("%s",dia);
+    rial_dia=atoi(dia);
+    //--------MES
+    strcpy(mes,vacio);
+    primero=otro_registro[3];
+    segundo=otro_registro[4];
+    tercero=otro_registro[5];
+    strcat(mes,&primero);
+    strcat(mes,&segundo);
+    strcat(mes,&tercero);
+    //printf("%s",mes);
+    rial_mes=num_mes(mes);
+    //--------ANHO
+    strcpy(anho,vacio);
+    primero=otro_registro[7];
+    segundo=otro_registro[8];
+    tercero=otro_registro[9];
+    cuarto=otro_registro[10];
+    strcat(anho,&primero);
+    strcat(anho,&segundo);
+    strcat(anho,&tercero);
+    strcat(anho,&cuarto);
+    //printf("%s\n",anho);
+    rial_anho=atoi(anho);
+    //rial_dia= atoi(dia);
+    //rial_mes= num_mes(mes);
+    //rial_anho=atoi(anho);
+
+    printf("%d-%d-%d\n",rial_dia,rial_mes,rial_anho);
+
+}
+//---------------------------------------------------------------------------------------------------//
+
+int main()
+{
+
+    char texto[1];
+    char fecha[26];
+    char ruta[40];
+    char opcion[6];
+    int j;
+
+    FILE *ptr_clientes;
+//------------------------------MENU---------------------------------------------------
+    while ((strcmp(opcion,"hora")!=0) && (strcmp(opcion,"semana")!=0) )
+    {
+        printf("\nIngrese opcion (hora) o (semana)\n");
+        gets(opcion);
+
+        if (strcmp(opcion, "hora"))
+        {
+            numero_opcion=0;
+        }
+        else if (strcmp(opcion,"semana"))
+        {
+            numero_opcion=1;
+        }
+        else
+        {
+            printf("Ingrese una opcion valida!!!!!\n");
+        }
+    }
+
+    printf("Ingrese la ruta del archivo\n");
+    gets(ruta);
+
+//-----------------------------------------------------------------------------------------
+
+    char ruta_default[]="C:/Users/EquipoCasa/Downloads/tarea1";
+    char archivo[]="/access.log";
+
+    strcat(ruta_default,archivo);
+
+    if ((ptr_clientes =fopen(ruta_default,"r"))==NULL )
+    {
+        printf("El archivo no se pudo abrir!!");
+    }
+
+    else
+    {
+        depurar_solo_fechas(ptr_clientes);
+
+
+
+        fclose(ptr_clientes);
+    }
+
+
+    //for(j=0;j<24;j++)
+    //{
+    //    printf("Hora %d Cantidad %d\n",j,cantidades[j]);
+    //}
+
+
+    //fclose(ptr_clientes);
+
+    printf("termine");
+    return 0;
+
+}
+
+
+
