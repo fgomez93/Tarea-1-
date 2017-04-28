@@ -107,4 +107,4 @@
 141.8.143.169 - - [01/May/2016:04:20:32 -0300] "GET /~mcast/imagenes.html HTTP/1.1" 200 1321 "-" "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
 66.249.65.97 - - [01/May/2016:04:20:23 -0300] "GET / HTTP/1.1" 200 2033 "-" "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
 66.249.65.106 - - [01/May/2016:04:20:10 -0300] "GET /~mcast/PROGRAMACION/20131/TAREAS/Tarea2.pdf HTTP/1.1" 200 81421 "-" "Googlebot/2.1 (+http://www.google.com/bot.html)"
-141.8.143.169 - - [01/May/2016:04:18:27 -0300] "GET /laboral.php?sec=ver_laboral;ol_id=24 HTTP/1.1" 200 2405 "-" "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
+141.8.143.169 - - [01/May/2016:11:18:27 -0300] "GET /laboral.php?sec=ver_laboral;ol_id=24 HTTP/1.1" 200 2405 "-" "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
