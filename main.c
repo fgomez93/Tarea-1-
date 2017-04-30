@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-long int cantidades[24];
-int numero_opcion;
+long int cantidades_hora[24];
+long int cantidades_semana[7];
 
 
-void depurar_solo_fechas(FILE *posicion)
+void depurar_solo_fechas(FILE *posicion, int opcion)
 {
     char caracter[1];
     char fecha[26];
@@ -24,12 +24,20 @@ void depurar_solo_fechas(FILE *posicion)
 
             fwrite(fecha,sizeof(char)*26,1,ptr_fechas);*/
 
-            //separar_hora(fecha);
-            separar_dma(fecha);
+            if (opcion==0)
+            {
+                separar_hora(fecha);
+            }
+            else if (opcion==1)
+            {
+                separar_dma(fecha);
+            }
+
         }
     }
     //fclose(ptr_fechas);
 }
+//---------------------- Procesar horas -----------------------------------------
 
 void separar_hora(char registro[26])
 {
@@ -52,22 +60,12 @@ void separar_hora(char registro[26])
 
 void funcion_hora(int hora)
 {
-    cantidades[hora]++;
+    cantidades_hora[hora]++;
 }
 
-int num_mes(char mes[3]){
-    char *Aux[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sep","Oct","Nov","Dic"};
-    int i;
-    for (i=0;i<12;i++){
-        //printf("%s-%s",Aux[i],mes);
-        if ( strcmp(Aux[i],mes)==0){
-            return i+1;
-        }
-    }
+//-------------------------Procesar semanas-------------------------------------------------------
 
 
-
-}
 void separar_dma(char registro[26]){
     char *otro_registro= registro;
     char vacio[]="";
@@ -91,6 +89,7 @@ void separar_dma(char registro[26]){
     strcat(mes,&segundo);
     strcat(mes,&tercero);
     //printf("%s",mes);
+    //rial_mes=12;
     rial_mes=num_mes(mes);
     //--------ANHO
     strcpy(anho,vacio);
@@ -108,9 +107,93 @@ void separar_dma(char registro[26]){
     //rial_mes= num_mes(mes);
     //rial_anho=atoi(anho);
 
-    printf("%d-%d-%d\n",rial_dia,rial_mes,rial_anho);
+    //printf("%d-%d-%d\n",rial_dia,rial_mes,rial_anho);
+
+    calendario(rial_dia,rial_mes,rial_anho);
 
 }
+
+
+int num_mes(char mes[3]){
+    char *Aux[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sep","Oct","Nov","Dic"};
+    int i;
+
+    for(i=0; i<12; i++)
+    {
+        if (strcmp(Aux[i],mes)==0)
+        {
+            return i+1;
+        }
+    }
+
+}
+
+
+
+//-------------------------------SUPER FUNCION DE CALENDARIO-------------------------------------------
+
+void calendario(int d, int m, int a)
+{
+    int regular[]={0,3,3,6,1,4,6,2,5,0,3,5};
+    int bisiesto[]={0,3,4,0,2,5,0,3,6,1,4,6};
+
+    int result1,result2,result3,result4,result5;
+
+
+    if((a%4==0) && !(a%100==0))
+    {
+        m=bisiesto[m-1];
+    }
+    else if (a%400==0)
+    {
+        m=bisiesto[m-1];
+    }
+    else
+    {
+        m=regular[m-1];
+    }
+
+    result1=(a-1)%7;
+    result2=(a-1)/4;
+    result3=(3*(((a-1)/100)+1))/4;
+    result4=(result2-result3)%7;
+    result5=d%7;
+    d=(result1+result4+m+result5)%7;
+
+    switch(d)
+    {
+        case 0:
+            funcion_dia(6);//Domingo
+            break;
+        case 1:
+            funcion_dia(0);//Lunes
+            break;
+        case 2:
+            funcion_dia(1);//Martes
+            break;
+        case 3:
+            funcion_dia(2);//Miercoles
+            break;
+        case 4:
+            funcion_dia(3);//Jueves
+            break;
+        case 5:
+            funcion_dia(4);//Viernes
+            break;
+        case 6:
+            funcion_dia(5);//Sabado
+            break;
+    }
+}
+
+void funcion_dia(int dia)
+{
+    cantidades_semana[dia]++;
+}
+
+
+
+
 //---------------------------------------------------------------------------------------------------//
 
 int main()
@@ -120,20 +203,22 @@ int main()
     char fecha[26];
     char ruta[40];
     char opcion[6];
-    int j;
+    int numero_opcion;
 
     FILE *ptr_clientes;
+
 //------------------------------MENU---------------------------------------------------
+
     while ((strcmp(opcion,"hora")!=0) && (strcmp(opcion,"semana")!=0) )
     {
-        printf("\nIngrese opcion (hora) o (semana)\n");
+        printf("Ingrese opcion (hora) o (semana)\n");
         gets(opcion);
 
-        if (strcmp(opcion, "hora"))
+        if (strcmp(opcion, "hora")==0)
         {
             numero_opcion=0;
         }
-        else if (strcmp(opcion,"semana"))
+        else if (strcmp(opcion,"semana")==0)
         {
             numero_opcion=1;
         }
@@ -148,38 +233,29 @@ int main()
 
 //-----------------------------------------------------------------------------------------
 
-    char ruta_default[]="C:/Users/EquipoCasa/Downloads/tarea1";
     char archivo[]="/access.log";
 
-    strcat(ruta_default,archivo);
+    strcat(ruta,archivo);
 
-    if ((ptr_clientes =fopen(ruta_default,"r"))==NULL )
+    if ((ptr_clientes =fopen(ruta,"r"))==NULL )
     {
         printf("El archivo no se pudo abrir!!");
     }
 
     else
     {
-        depurar_solo_fechas(ptr_clientes);
-
-
+        depurar_solo_fechas(ptr_clientes, numero_opcion);
 
         fclose(ptr_clientes);
     }
 
 
-    //for(j=0;j<24;j++)
-    //{
-    //    printf("Hora %d Cantidad %d\n",j,cantidades[j]);
-    //}
 
-
-    //fclose(ptr_clientes);
-
-    printf("termine");
+    printf("termine :)");
     return 0;
 
 }
+
 
 
 
